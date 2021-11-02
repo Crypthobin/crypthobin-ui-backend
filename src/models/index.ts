@@ -18,12 +18,15 @@ export interface WalletData {
 export interface AddressData {
   id: number
   registerId: string
-  walletId: string
+  walletAddress: string
   explanation: string
   createdAt: number
 }
 
+export type TransactionType = 'SEND' | 'RECEIVE'
+
 export interface TransactionData {
+  type: TransactionType
   from: string
   to: string
   amount: number
