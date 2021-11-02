@@ -18,7 +18,7 @@ CREATE TABLE `wallets` (
 );
 
 CREATE TABLE `addresses` (
-	`address_id`	int	NOT NULL,
+	`address_id`	int	NOT NULL AUTO_INCREMENT,
 	`user_id`	varchar(30)	NOT NULL,
 	`wallet_addr`	char(44)	NOT NULL,
 	`address_explan`	varchar(100)	NULL,
