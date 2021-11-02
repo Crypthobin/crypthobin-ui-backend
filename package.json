@@ -11,10 +11,8 @@
     "dev": "nodemon -e ts --exec 'tsc && node . || exit 1'"
   },
   "dependencies": {
-    "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.13",
     "@types/morgan": "^1.9.3",
-    "cookie-parser": "^1.4.5",
     "crypto-random-string": "3",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",

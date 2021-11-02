@@ -32,9 +32,14 @@ export function createToken (user: UserData) {
   }, process.env.JWT_SECRET!)
 }
 
-export function solveToken (token: string) {
+export function solveToken (token?: string) {
+  if (!token) return undefined
+  const [type, str] = token.split(' ')
+
+  if (type !== 'Bearer') return undefined
+
   try {
-    const data = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload
+    const data = jwt.verify(str, process.env.JWT_SECRET!) as JwtPayload
     if (data.exp < Date.now()) {
       return undefined
     }

@@ -1,11 +1,10 @@
+import { solveToken } from '../utils/crypto'
+import ENDPOINT_ERRORS from '../constants/errors'
 import { NextFunction, Request, Response } from 'express'
-import cookieParser from 'cookie-parser'
-import { solveToken } from 'utils/crypto'
-import ENDPOINT_ERRORS from 'constants/errors'
 
-function authUserFn (req: Request, res: Response, next: NextFunction) {
-  const { token } = req.cookies
-  const userId = solveToken(token)
+export default function authUser (req: Request, res: Response, next: NextFunction) {
+  const { authorization } = req.headers
+  const userId = solveToken(authorization)
 
   if (!userId) {
     res.status(400).send({
@@ -20,5 +19,3 @@ function authUserFn (req: Request, res: Response, next: NextFunction) {
   res.locals.userId = userId
   next()
 }
-
-export default [cookieParser, authUserFn]

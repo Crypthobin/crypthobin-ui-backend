@@ -45,11 +45,13 @@ router.post('/login', async (req, res) => {
 
   res.send({
     success: true,
-    user: <UserData>{
-      createdAt: user.createdAt,
-      id: user.id
-    },
-    token
+    data: {
+      user: <UserData>{
+        createdAt: user.createdAt,
+        id: user.id
+      },
+      token
+    }
   })
 })
 
@@ -117,11 +119,13 @@ router.post('/regist', async (req, res) => {
 
   res.send({
     success: true,
-    user: <UserData>{
-      createdAt: user.createdAt,
-      id: user.id
-    },
-    token
+    data: {
+      user: <UserData>{
+        createdAt: user.createdAt,
+        id: user.id
+      },
+      token
+    }
   })
 })
 
