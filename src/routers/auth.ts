@@ -7,7 +7,6 @@ import { createToken, hashPassword, verifyPassword } from '../utils/crypto'
 const router = Router()
 
 router.use(json())
-
 router.post('/login', async (req, res) => {
   const { id, password } = req.body
   if (!id || !password) {
@@ -67,7 +66,7 @@ router.post('/regist', async (req, res) => {
     return
   }
 
-  if (id.length > 30) {
+  if (id.length < 6 || id.length > 30) {
     res.status(400).json({
       success: false,
       error: 112,
@@ -125,3 +124,5 @@ router.post('/regist', async (req, res) => {
     token
   })
 })
+
+export default router

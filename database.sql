@@ -2,12 +2,13 @@ CREATE USER bobowl@localhost;
 CREATE SCHEMA bobowl;
 
 grant all on bobowl.* to bobowl@localhost;
+use bobowl;
 
 CREATE TABLE `users` (
 	`user_id`	varchar(30)	NOT NULL,
-	`user_passwd`	char(64) NOTNULL,
+	`user_passwd`	char(64) NOT NULL,
 	`user_salt`	char(10)	NOT NULL,
-	`user_date`	timestamp NOT	NULL DEFAULT CURRENT_TIMESTAMP,
+	`user_date`	timestamp NOT	NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `wallets` (
@@ -18,7 +19,7 @@ CREATE TABLE `wallets` (
 );
 
 CREATE TABLE `addresses` (
-	`address_id`	int	NOT NULL AUTO_INCREMENT,
+	`address_id`	int	NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	`user_id`	varchar(30)	NOT NULL,
 	`wallet_addr`	char(44)	NOT NULL,
 	`address_explan`	varchar(100)	NULL,
