@@ -14,7 +14,7 @@ export default class Wallet implements WalletData {
     this.ownerId = data.ownerId
   }
 
-  public get owner () {
+  public getOwner () {
     return db.getUserData(this.ownerId)
   }
 
@@ -22,6 +22,10 @@ export default class Wallet implements WalletData {
     this.alias = alias
 
     return db.updateWalletAlias(this.address, this.alias)
+  }
+
+  public listTransactions () {
+    return db.listTransactionDatas(this.address)
   }
 
   public static async fromWalletAddress (walletAddress: string) {
