@@ -2,13 +2,15 @@ import morgan from 'morgan'
 import express from 'express'
 import authRouter from './routers/auth'
 import walletRouter from './routers/wallets'
+import addressRouter from './routers/addresses'
 import notfound from './middlewares/notfound'
 
 const app = express()
 
 app.use(morgan('common'))
 app.use('/auth', authRouter)
-app.use('/wallets', walletRouter)
+app.use('/api/wallets', walletRouter)
+app.use('/api/addresses', addressRouter)
 app.use(notfound)
 
 app.listen(3000, () => {

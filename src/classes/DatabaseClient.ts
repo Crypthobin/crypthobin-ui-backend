@@ -183,7 +183,7 @@ export default class DatabaseClient {
   /**
    * userId가 등록한 번호부 목록을 얻습니다.
    */
-  public async listAddresseDatas (userId: string): Promise<AddressData[]> {
+  public async listAddressDatas (userId: string): Promise<AddressData[]> {
     if (userId.length < 6 || userId.length > 30) {
       throw new Error('ID is too short or long')
     }
