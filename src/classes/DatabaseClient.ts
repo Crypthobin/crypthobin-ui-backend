@@ -1,6 +1,6 @@
 import knex, { Knex } from 'knex'
 import { config } from 'dotenv'
-import { AddressData, TransactionData, UnsecuredUserData, WalletData } from 'models'
+import { AddressData, UnsecuredUserData, WalletData } from 'models'
 
 config()
 
@@ -66,17 +66,19 @@ export default class DatabaseClient {
   /**
    * 받은 ID를 가지고 있는 지갑 정보를 얻습니다.
    */
-  public async getWalletData (walletAddr: string): Promise<WalletData | undefined> {
+  public async getWalletData (walletId: string): Promise<WalletData | undefined> {
     const [wallet] = await this.db
       .select('*')
       .from('wallets')
-      .where({ wallet_addr: walletAddr })
+      .where({ wallet_id: walletId })
 
     if (!wallet) return undefined
 
     return {
+      id: wallet.wallet_id,
       address: wallet.wallet_addr,
       ownerId: wallet.user_id,
+      balance: 0,
       alias: wallet.wallet_alias,
       createdAt: wallet.wallet_date
     }
@@ -92,8 +94,10 @@ export default class DatabaseClient {
       .where({ user_id: userId })
 
     return wallets.map((v) => ({
+      id: v.wallet_id,
       address: v.wallet_addr,
       ownerId: v.user_id,
+      balance: 0,
       alias: v.wallet_alias,
       createdAt: v.wallet_date
     }))
@@ -102,8 +106,8 @@ export default class DatabaseClient {
   /**
    * 지갑 정보를 추가합니다.
    */
-  public async putWalletData (data: Omit<WalletData, 'createdAt'>): Promise<void> {
-    if (data.address.length !== 44) {
+  public async putWalletData (data: Omit<WalletData, 'createdAt' | 'balance'>): Promise<void> {
+    if (data.address.length !== 43) {
       throw new Error('Address is invalid')
     }
 
@@ -119,6 +123,7 @@ export default class DatabaseClient {
       .insert({
         wallet_addr: data.address,
         user_id: data.ownerId,
+        wallet_id: data.id,
         wallet_alias: data.alias
       }).into('wallets')
   }
@@ -126,33 +131,33 @@ export default class DatabaseClient {
   /**
    * 지갑 이름을 수정합니다.
    */
-  public async updateWalletAlias (walletAddr: string, alias: string): Promise<void> {
+  public async updateWalletAlias (walletId: string, alias: string): Promise<void> {
     if (alias.length < 1 || alias.length > 50) {
       throw new Error('Alias is too short or long')
     }
 
-    if (!this.getWalletData(walletAddr)) {
+    if (!this.getWalletData(walletId)) {
       throw new Error('Wallet does not exist')
     }
 
     await this.db
       .update({ wallet_alias: alias })
       .from('wallets')
-      .where({ wallet_addr: walletAddr })
+      .where({ wallet_addr: walletId })
   }
 
   /**
    * 지갑을 등록 해제합니다.
    */
-  public async deleteWalletData (walletAddr: string): Promise<void> {
-    if (!this.getWalletData(walletAddr)) {
+  public async deleteWalletData (walletId: string): Promise<void> {
+    if (!this.getWalletData(walletId)) {
       throw new Error('Wallet does not exist')
     }
 
     await this.db
       .delete()
       .from('wallets')
-      .where({ wallet_addr: walletAddr })
+      .where({ wallet_addr: walletId })
   }
 
   /**
@@ -195,7 +200,6 @@ export default class DatabaseClient {
     return addresses.map((v) => ({
       id: v.address_id,
       createdAt: v.address_date,
-      address: v.wallet_addr,
       registerId: v.user_id,
       explanation: v.address_explan,
       walletAddress: v.wallet_addr
@@ -206,7 +210,7 @@ export default class DatabaseClient {
    * 주소 정보를 추가합니다.
    */
   public async putAddressData (data: Omit<AddressData, 'createdAt'>): Promise<void> {
-    if (data.walletAddress.length !== 44) {
+    if (data.walletAddress.length !== 43) {
       throw new Error('Address is invalid')
     }
 
@@ -256,57 +260,6 @@ export default class DatabaseClient {
       .update({ address_explan: explanation })
       .from('addresses')
       .where({ address_id: addressId })
-  }
-
-  /**
-   * 거래 내역을 조회합니다.
-   */
-  public async listTransactionDatas (walletAddr: string): Promise<TransactionData[]> {
-    const sends =
-      await this.db
-        .select('*')
-        .from('transactions')
-        .where({ wallet_addr_from: walletAddr })
-
-    const receives =
-      await this.db
-        .select('*')
-        .from('transactions')
-        .where({ wallet_addr_to: walletAddr })
-
-    const transactions = <TransactionData[]>[
-      ...sends.map((data) => ({ ...data, type: 'SEND' })),
-      ...receives.map((data) => ({ ...data, type: 'RECEIVE' }))]
-
-    return transactions
-  }
-
-  /**
-   * 거래 내역을 추가합니다.
-   */
-  public async putTransactionData (data: Omit<TransactionData, 'createdAt'>) {
-    if (data.amount < 0) {
-      throw new Error('Amount is invalid')
-    }
-
-    if (data.from.length !== 44 && data.to.length !== 44) {
-      throw new Error('Address is invalid')
-    }
-
-    if (!await this.getWalletData(data.from)) {
-      throw new Error('wallet does not exist')
-    }
-
-    if (!await this.getWalletData(data.to)) {
-      throw new Error('wallet does not exist')
-    }
-
-    await this.db
-      .insert({
-        wallet_addr_from: data.from,
-        wallet_addr_to: data.to,
-        trans_amount: data.amount
-      }).into('transactions')
   }
 }
 
