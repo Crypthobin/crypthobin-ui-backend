@@ -11,6 +11,12 @@ const ENDPOINT_ERRORS = {
   114: 'INPUT_FIELD_NOT_FOUND', // ID 혹은 비밀번호를 입력하지 않음
   115: 'PASSWORD_CHECK_FAILD', // 비밀번호와 비밀번호 확인이 일치하지 않음
 
+  211: 'WALLET_NOT_FOUND', // 월렛을 찾을 수 없음
+  212: 'WALLET_NOT_OWNER', // 월렛의 소유자가 아님
+
+  221: 'WALLET_GENERATION_FAILD', // 월렛 생성 실패
+  222: 'ADDRESS_GENERATION_FAILD', // 주소 생성 실패
+
   901: 'USER_NOT_LOGINED_OR_TOKEN_INVAILD', // 로그인 하지 않았거나 세션이 유효하지 않음 (-> 다시 로그인)
   902: 'ENDPOINT_NOT_FOUND' // 해당하는 엔드포인트를 찾을 수 없음
 }
