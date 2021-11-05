@@ -1,0 +1,8 @@
+POST http://localhost:3000/auth/regist
+Content-Type: application/json
+
+{
+  "id": "testtest",
+  "password": "password1234",
+  "passwordCheck": "password1234"
+}

@@ -1,0 +1,7 @@
+POST http://localhost:3000/wallets
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dGVzdCIsImlhdCI6MTYzNjAyODUwMDQyOSwiZXhwIjoxNjM2MTE0OTAwNDI5fQ.Ra3HZXVB21imLR-daDlxEfYZDBoJKd9wovIvGvay-GU
+
+{
+  "alias": "테스트월렛2"
+}
