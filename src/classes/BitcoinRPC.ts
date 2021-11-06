@@ -34,6 +34,13 @@ export default class BitcoinRPC {
       method: 'getbalance'
     }, walletId)
   }
+
+  public transit (walletId: string, toAddress: string, amount: number): Promise<any> {
+    return this._request({
+      method: 'send',
+      params: [{ [toAddress]: amount }]
+    }, walletId)
+  }
 }
 
 export const bitcoin = new BitcoinRPC()

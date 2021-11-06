@@ -115,4 +115,67 @@ router.post('/', async (req, res) => {
   })
 })
 
+router.post('/:walletId/remittance', async (req, res) => {
+  const { userId } = res.locals
+  const { walletId } = req.params
+  const { to, amount } = req.body
+
+  if (typeof to !== 'string' || to.length !== 43) {
+    res.status(400).send({
+      success: false,
+      error: 231,
+      message: ENDPOINT_ERRORS[231]
+    })
+
+    return
+  }
+
+  if (typeof amount !== 'number' || amount < 0) {
+    res.status(400).send({
+      success: false,
+      error: 232,
+      message: ENDPOINT_ERRORS[232]
+    })
+
+    return
+  }
+
+  const wallet = await db.getWalletData(walletId)
+  if (!wallet) {
+    res.status(400).send({
+      success: false,
+      error: 233,
+      message: ENDPOINT_ERRORS[233]
+    })
+
+    return
+  }
+
+  if (userId !== wallet.ownerId) {
+    res.status(403).send({
+      success: false,
+      error: 234,
+      message: ENDPOINT_ERRORS[234]
+    })
+
+    return
+  }
+
+  const balance = await bitcoin.getBalance(wallet.id)
+  if (balance < amount) {
+    res.status(400).send({
+      success: false,
+      error: 235,
+      message: ENDPOINT_ERRORS[235]
+    })
+
+    return
+  }
+
+  await bitcoin.transit(wallet.id, to, amount)
+  res.send({
+    success: true
+  })
+})
+
 export default router

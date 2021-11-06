@@ -18,7 +18,13 @@ const ENDPOINT_ERRORS = {
   222: 'ADDRESS_GENERATION_FAILD', // 주소 생성 실패
   223: 'ALIAS_INVALID', // 월렛 별명이 너무 짧거나 김
 
-  311: 'ADDRESS_INVAILD', // 주소 형식이 잘못되었습니다
+  231: 'ADDRESS_INVAILD', // 주소 형식이 잘못됨
+  232: 'AMOUNT_INVAILD', // 송금액 형식이 잘못됨
+  233: 'WALLET_NOT_FOUND', // 월렛을 찾을 수 없음
+  234: 'WALLET_NOT_OWNER', // 월렛의 소유자가 아님
+  235: 'LOW_BALANCE', // 잔액 부족
+
+  311: 'ADDRESS_INVAILD', // 주소 형식이 잘못됨
   312: 'EXPLAIN_TOO_LONG', // 설명이 너무 김
 
   321: 'ADDRESS_NOT_FOUND', // 주소록을 찾을 수 없음
