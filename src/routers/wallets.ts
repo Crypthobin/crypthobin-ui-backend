@@ -32,7 +32,7 @@ router.get('/:id', async (req, res) => {
 
   const wallets = await db.getWalletData(id)
   if (!wallets) {
-    res.send({
+    res.status(400).send({
       success: false,
       error: 211,
       message: ENDPOINT_ERRORS[211]
@@ -62,11 +62,21 @@ router.post('/', async (req, res) => {
   const { userId: ownerId } = res.locals
   const { alias } = req.body
 
+  if (typeof alias !== 'string' || alias.length < 1 || alias.length > 50) {
+    res.status(400).send({
+      success: false,
+      error: 223,
+      message: ENDPOINT_ERRORS[223]
+    })
+
+    return
+  }
+
   const walletRes = await bitcoin.createWallet()
   const walletId = walletRes.body?.result?.name
 
   if (!walletId) {
-    res.send({
+    res.status(400).send({
       success: false,
       error: 221,
       message: ENDPOINT_ERRORS[221]
@@ -79,7 +89,7 @@ router.post('/', async (req, res) => {
   const walletAddress = addressRes.body?.result
 
   if (!walletAddress) {
-    res.send({
+    res.status(400).send({
       success: false,
       error: 222,
       message: ENDPOINT_ERRORS[222]

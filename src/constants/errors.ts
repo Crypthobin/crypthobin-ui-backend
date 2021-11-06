@@ -16,6 +16,20 @@ const ENDPOINT_ERRORS = {
 
   221: 'WALLET_GENERATION_FAILD', // 월렛 생성 실패
   222: 'ADDRESS_GENERATION_FAILD', // 주소 생성 실패
+  223: 'ALIAS_INVALID', // 월렛 별명이 너무 짧거나 김
+
+  311: 'ADDRESS_INVAILD', // 주소 형식이 잘못되었습니다
+  312: 'EXPLAIN_TOO_LONG', // 설명이 너무 김
+
+  321: 'ADDRESS_NOT_FOUND', // 주소록을 찾을 수 없음
+  322: 'ADDRESS_NOT_OWNER', // 주소록의 등록자가 아님
+
+  331: 'ADDRESS_NOT_FOUND', // 주소록을 찾을 수 없음
+  332: 'ADDRESS_NOT_OWNER', // 주소록의 등록자가 아님
+  333: 'EXPLAIN_TOO_LONG', // 설명이 너무 김
+
+  341: 'ADDRESS_NOT_FOUND', // 주소록을 찾을 수 없음
+  342: 'ADDRESS_NOT_OWNER', // 주소록의 등록자가 아님
 
   901: 'USER_NOT_LOGINED_OR_TOKEN_INVAILD', // 로그인 하지 않았거나 세션이 유효하지 않음 (-> 다시 로그인)
   902: 'ENDPOINT_NOT_FOUND' // 해당하는 엔드포인트를 찾을 수 없음

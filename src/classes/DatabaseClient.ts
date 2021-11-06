@@ -209,17 +209,13 @@ export default class DatabaseClient {
   /**
    * 주소 정보를 추가합니다.
    */
-  public async putAddressData (data: Omit<AddressData, 'createdAt'>): Promise<void> {
+  public async putAddressData (data: Omit<AddressData, 'createdAt' | 'id'>): Promise<void> {
     if (data.walletAddress.length !== 43) {
       throw new Error('Address is invalid')
     }
 
     if (data.explanation.length > 100) {
       throw new Error('Explanation is too long')
-    }
-
-    if (!this.getWalletData(data.walletAddress)) {
-      throw new Error('Wallet does not exist')
     }
 
     await this.db
