@@ -14,6 +14,7 @@ export interface WalletData {
   ownerId: string
   alias: string
   balance: number
+  qrKey: string
   createdAt: number
 }
 

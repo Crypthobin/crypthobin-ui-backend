@@ -79,6 +79,7 @@ export default class DatabaseClient {
       address: wallet.wallet_addr,
       ownerId: wallet.user_id,
       balance: 0,
+      qrKey: '',
       alias: wallet.wallet_alias,
       createdAt: wallet.wallet_date
     }
@@ -98,6 +99,7 @@ export default class DatabaseClient {
       address: v.wallet_addr,
       ownerId: v.user_id,
       balance: 0,
+      qrKey: '',
       alias: v.wallet_alias,
       createdAt: v.wallet_date
     }))

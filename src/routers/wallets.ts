@@ -2,6 +2,7 @@ import { json, Router } from 'express'
 import authUser from '../middlewares/auth'
 import { db } from '../classes/DatabaseClient'
 import { bitcoin } from '../classes/BitcoinRPC'
+import { qrStorage } from '../classes/QRStorage'
 import ENDPOINT_ERRORS from '../constants/errors'
 
 const router = Router()
@@ -18,6 +19,7 @@ router.get('/', async (_, res) => {
     const balance = (await bitcoin.getBalance(wallet.id))?.body?.result || 0
 
     wallets[walletIndex].balance = balance
+    wallets[walletIndex].qrKey = await qrStorage.regist(wallet.address)
   }
 
   res.send({
@@ -30,8 +32,8 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params
   const { userId } = res.locals
 
-  const wallets = await db.getWalletData(id)
-  if (!wallets) {
+  const wallet = await db.getWalletData(id)
+  if (!wallet) {
     res.status(400).send({
       success: false,
       error: 211,
@@ -40,7 +42,7 @@ router.get('/:id', async (req, res) => {
     return
   }
 
-  if (userId !== wallets?.ownerId) {
+  if (userId !== wallet?.ownerId) {
     res.status(403).send({
       success: false,
       error: 212,
@@ -50,11 +52,12 @@ router.get('/:id', async (req, res) => {
     return
   }
 
-  wallets.balance = (await bitcoin.getBalance(id))?.body?.result || 0
+  wallet.balance = (await bitcoin.getBalance(id))?.body?.result || 0
+  wallet.qrKey = await qrStorage.regist(wallet.address)
 
   res.send({
     success: true,
-    data: wallets
+    data: wallet
   })
 })
 
@@ -102,6 +105,7 @@ router.post('/', async (req, res) => {
     address: walletAddress,
     id: walletId,
     ownerId,
+    qrKey: await qrStorage.regist(walletAddress),
     alias
   })
 
