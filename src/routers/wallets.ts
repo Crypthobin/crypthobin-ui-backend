@@ -16,7 +16,7 @@ router.get('/', async (_, res) => {
 
   for (const walletIndex in wallets) {
     const wallet = wallets[walletIndex]
-    const balance = (await bitcoin.getBalance(wallet.id))?.body?.result || 0
+    const balance = await bitcoin.getBalance(wallet.id) || 0
 
     wallets[walletIndex].balance = balance
     wallets[walletIndex].qrKey = await qrStorage.regist(wallet.address)
@@ -52,7 +52,7 @@ router.get('/:id', async (req, res) => {
     return
   }
 
-  wallet.balance = (await bitcoin.getBalance(id))?.body?.result || 0
+  wallet.balance = await bitcoin.getBalance(id) || 0
   wallet.qrKey = await qrStorage.regist(wallet.address)
 
   res.send({
@@ -76,7 +76,7 @@ router.post('/', async (req, res) => {
   }
 
   const walletRes = await bitcoin.createWallet()
-  const walletId = walletRes.body?.result?.name
+  const walletId = walletRes.name
 
   if (!walletId) {
     res.status(400).send({
@@ -88,8 +88,8 @@ router.post('/', async (req, res) => {
     return
   }
 
-  const addressRes = await bitcoin.createAddress(walletRes.body.result.name)
-  const walletAddress = addressRes.body?.result
+  const addressRes = await bitcoin.createAddress(walletId)
+  const walletAddress = addressRes
 
   if (!walletAddress) {
     res.status(400).send({

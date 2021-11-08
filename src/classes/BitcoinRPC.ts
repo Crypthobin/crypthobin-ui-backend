@@ -11,6 +11,7 @@ export default class BitcoinRPC {
     return post(`http://backend:pass@127.0.0.1:${BITCOIND_RPC_PORT}${walletId ? `/wallet/${walletId}` : ''}`)
       .set('Content-Type', 'text/plain')
       .send(JSON.stringify({ ...data, jsonrpc: '1.0', id: cryptoRandomString({ length: 10 }) }))
+      .then((res) => res.body?.result)
   }
 
   public createWallet (): Promise<any> {
@@ -39,6 +40,12 @@ export default class BitcoinRPC {
     return this._request({
       method: 'send',
       params: [{ [toAddress]: amount }]
+    }, walletId)
+  }
+
+  public getTransactions (walletId: string): Promise<any> {
+    return this._request({
+      method: 'listtransactions'
     }, walletId)
   }
 }
