@@ -8,11 +8,13 @@
   "scripts": {
     "build": "tsc",
     "start": "node .",
-    "dev": "nodemon -e ts --exec 'tsc && node . || exit 1'"
+    "dev": "nodemon -e ts --exec \"tsc && node . || exit 1\""
   },
   "dependencies": {
     "@types/express": "^4.17.13",
     "@types/morgan": "^1.9.3",
+    "@types/superagent": "^4.1.13",
+    "awesome-qr": "^2.1.5-rc.0",
     "crypto-random-string": "3",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -20,7 +22,8 @@
     "keccak256": "^1.0.3",
     "knex": "^0.95.12",
     "morgan": "^1.10.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "superagent": "^6.1.0"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.5",

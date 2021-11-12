@@ -9,7 +9,7 @@ const router = Router()
 router.use(json())
 router.post('/login', async (req, res) => {
   const { id, password } = req.body
-  if (!id || !password) {
+  if ([id, password].some(v => typeof v !== 'string')) {
     res.status(400).json({
       success: false,
       error: 103,
@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
 router.post('/regist', async (req, res) => {
   const { id, password, passwordCheck } = req.body
 
-  if (!id || !password || !passwordCheck) {
+  if ([id, password, passwordCheck].some(v => typeof v !== 'string')) {
     res.status(400).json({
       success: false,
       error: 114,
