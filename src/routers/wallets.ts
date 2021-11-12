@@ -16,10 +16,12 @@ router.get('/', async (_, res) => {
 
   for (const walletIndex in wallets) {
     const wallet = wallets[walletIndex]
+
     const balance = await bitcoin.getBalance(wallet.id) || 0
+    const qrKey = await qrStorage.regist(wallet.address)
 
     wallets[walletIndex].balance = balance
-    wallets[walletIndex].qrKey = await qrStorage.regist(wallet.address)
+    wallets[walletIndex].qrKey = qrKey
   }
 
   res.send({
@@ -179,6 +181,43 @@ router.post('/:walletId/remittance', async (req, res) => {
   await bitcoin.transit(wallet.id, to, amount)
   res.send({
     success: true
+  })
+})
+
+router.get('/:walletId/transactions', async (req, res) => {
+  const { userId } = res.locals
+  const { walletId } = req.params
+
+  const wallet = await db.getWalletData(walletId)
+  if (!wallet) {
+    res.status(400).send({
+      success: false,
+      error: 241,
+      message: ENDPOINT_ERRORS[241]
+    })
+
+    return
+  }
+
+  if (userId !== wallet.ownerId) {
+    res.status(403).send({
+      success: false,
+      error: 242,
+      message: ENDPOINT_ERRORS[242]
+    })
+
+    return
+  }
+
+  const transactions = await bitcoin.getTransactions(wallet.id)
+
+  const filteredTransactions =
+    transactions.filter((v: any) =>
+      ['send', 'receive'].includes(v.category))
+
+  res.send({
+    success: true,
+    data: filteredTransactions
   })
 })
 

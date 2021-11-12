@@ -1,10 +1,8 @@
 const ENDPOINT_ERRORS = {
-  // 유저 로그인
   101: 'USER_NOT_EXIST', // 입력한 ID가 존재하지 않음
   102: 'PASSWORD_INVAILD', // 입력한 비밀번호가 틀림
   103: 'INPUT_FIELD_NOT_FOUND', // ID 혹은 비밀번호를 입력하지 않음
 
-  // 유저 회원가입
   111: 'ID_ALREADY_CLAIMED', // 이미 사용중인 아이디
   112: 'ID_TOO_SHORT_OR_LONG', // ID가 너무 김
   113: 'PASSWORD_TOO_SHORT', // 비밀번호가 너무 짧음
@@ -23,6 +21,9 @@ const ENDPOINT_ERRORS = {
   233: 'WALLET_NOT_FOUND', // 월렛을 찾을 수 없음
   234: 'WALLET_NOT_OWNER', // 월렛의 소유자가 아님
   235: 'LOW_BALANCE', // 잔액 부족
+
+  241: 'WALLET_NOT_FOUND', // 월렛을 찾을 수 없음
+  242: 'WALLET_NOT_OWNER', // 월렛의 소유자가 아님
 
   311: 'ADDRESS_INVAILD', // 주소 형식이 잘못됨
   312: 'EXPLAIN_TOO_LONG', // 설명이 너무 김

@@ -7,11 +7,12 @@ config()
 const { BITCOIND_RPC_PORT } = process.env
 
 export default class BitcoinRPC {
-  private _request (data: any, walletId?: string) {
-    return post(`http://backend:pass@127.0.0.1:${BITCOIND_RPC_PORT}${walletId ? `/wallet/${walletId}` : ''}`)
+  private async _request (data: any, walletId?: string) {
+    const res = await post(`http://backend:pass@127.0.0.1:${BITCOIND_RPC_PORT}${walletId ? `/wallet/${walletId}` : ''}`)
       .set('Content-Type', 'text/plain')
       .send(JSON.stringify({ ...data, jsonrpc: '1.0', id: cryptoRandomString({ length: 10 }) }))
-      .then((res) => res.body?.result)
+
+    return res.body?.result
   }
 
   public createWallet (): Promise<any> {
@@ -47,6 +48,18 @@ export default class BitcoinRPC {
     return this._request({
       method: 'listtransactions'
     }, walletId)
+  }
+
+  public getBlockCount (): Promise<number> {
+    return this._request({
+      method: 'getblockcount'
+    })
+  }
+
+  public getNodeCount (): Promise<number> {
+    return this._request({
+      method: 'getconnectioncount'
+    })
   }
 }
 
