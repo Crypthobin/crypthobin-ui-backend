@@ -61,6 +61,20 @@ export default class BitcoinRPC {
       method: 'getconnectioncount'
     })
   }
+
+  public getNthBlockHash (n: number): Promise<string> {
+    return this._request({
+      method: 'getblockhash',
+      params: [n]
+    })
+  }
+
+  public getBlockFromHash (hash: string): Promise<any> {
+    return this._request({
+      method: 'getblock',
+      params: [hash, 2]
+    })
+  }
 }
 
 export const bitcoin = new BitcoinRPC()

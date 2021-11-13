@@ -19,6 +19,10 @@ export default class DatabaseClient {
     })
   }
 
+  public async getUserCount (): Promise<number> {
+    return ((await this.db.count('user_id').from('users')) as any[])[0]['count(`user_id`)']
+  }
+
   /**
    * 보안 정보가 포함된 유저 정보를 얻습니다.
    */
