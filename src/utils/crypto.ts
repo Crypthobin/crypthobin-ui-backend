@@ -1,13 +1,8 @@
 import jwt from 'jsonwebtoken'
-import { config } from 'dotenv'
 import keccak256 from 'keccak256'
-import { TOKEN_EXPIRE_TIME } from '../constants'
+import { JWT_SECRET, TOKEN_EXPIRE_TIME } from '../constants'
 import cryptoRandomString from 'crypto-random-string'
 import { UnsecuredUserData, UserData } from '../models'
-
-config()
-
-const { JWT_SECRET } = process.env
 
 interface JwtPayload {
   iat: number
@@ -51,7 +46,7 @@ export class CryptoUtil {
 
   public static generateToken (user: UserData) {
     const payload = this.payloadfn(user.id)
-    return jwt.sign(payload, JWT_SECRET!)
+    return jwt.sign(payload, JWT_SECRET)
   }
 
   public static verifyToken (token?: string) {
@@ -61,7 +56,7 @@ export class CryptoUtil {
     if (type !== 'Bearer') return null
 
     try {
-      const data = jwt.verify(str, JWT_SECRET!) as JwtPayload
+      const data = jwt.verify(str, JWT_SECRET) as JwtPayload
 
       if (data.exp < Date.now()) return null
       return data.sub
