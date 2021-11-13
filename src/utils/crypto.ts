@@ -7,45 +7,64 @@ import { UnsecuredUserData, UserData } from '../models'
 
 config()
 
+const { JWT_SECRET } = process.env
+
 interface JwtPayload {
   iat: number
   sub: string
   exp: number
 }
 
-export function verifyPassword (password: string, user: UnsecuredUserData) {
-  return keccak256(user.salt + password).toString('hex') === user.passwd
-}
+export class CryptoUtil {
+  private static hashfn (data: string) {
+    return keccak256(data).toString('hex')
+  }
 
-export function hashPassword (password: string) {
-  const salt = cryptoRandomString({ length: 10, type: 'ascii-printable' })
-  const passwd = keccak256(salt + password).toString('hex')
+  private static saltfn () {
+    return cryptoRandomString({
+      length: 10,
+      type: 'ascii-printable'
+    })
+  }
 
-  return { salt, passwd }
-}
-
-export function createToken (user: UserData) {
-  return jwt.sign({
-    sub: user.id,
-    iat: Date.now(),
-    exp: Date.now() + TOKEN_EXPIRE_TIME
-  }, process.env.JWT_SECRET!)
-}
-
-export function solveToken (token?: string) {
-  if (!token) return undefined
-  const [type, str] = token.split(' ')
-
-  if (type !== 'Bearer') return undefined
-
-  try {
-    const data = jwt.verify(str, process.env.JWT_SECRET!) as JwtPayload
-    if (data.exp < Date.now()) {
-      return undefined
+  private static payloadfn (sub: string): JwtPayload {
+    return {
+      sub,
+      iat: Date.now(),
+      exp: Date.now() + TOKEN_EXPIRE_TIME
     }
+  }
 
-    return data.sub
-  } catch (e) {
-    return undefined
+  public static hashPassword (password: string) {
+    const salt = this.saltfn()
+    const hash = this.hashfn(`${salt}${password}`)
+
+    return { salt, passwd: hash }
+  }
+
+  public static verifyPassword (password: string, user: UnsecuredUserData) {
+    const { salt, passwd } = user
+    const hash = this.hashfn(`${salt}${password}`)
+
+    return hash === passwd
+  }
+
+  public static generateToken (user: UserData) {
+    const payload = this.payloadfn(user.id)
+    return jwt.sign(payload, JWT_SECRET!)
+  }
+
+  public static verifyToken (token?: string) {
+    if (!token) return null
+    const [type, str] = token.split(' ')
+
+    if (type !== 'Bearer') return null
+
+    try {
+      const data = jwt.verify(str, JWT_SECRET!) as JwtPayload
+
+      if (data.exp < Date.now()) return null
+      return data.sub
+    } catch (_) { return null }
   }
 }

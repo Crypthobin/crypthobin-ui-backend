@@ -1,16 +1,18 @@
-import cryptoRandomString from 'crypto-random-string'
-import { config } from 'dotenv'
 import { post } from 'superagent'
-
-config()
-
-const { BITCOIND_RPC_PORT } = process.env
+import { BITCOIND_RPC_URL } from '../constants'
+import cryptoRandomString from 'crypto-random-string'
 
 export default class BitcoinRPC {
   private async _request (data: any, walletId?: string) {
-    const res = await post(`http://backend:pass@127.0.0.1:${BITCOIND_RPC_PORT}${walletId ? `/wallet/${walletId}` : ''}`)
+    const url = `${BITCOIND_RPC_URL}${walletId ? `/wallet/${walletId}` : ''}`
+
+    const res = await post(url)
       .set('Content-Type', 'text/plain')
-      .send(JSON.stringify({ ...data, jsonrpc: '1.0', id: cryptoRandomString({ length: 10 }) }))
+      .send(JSON.stringify({
+        ...data,
+        jsonrpc: '1.0',
+        id: cryptoRandomString({ length: 10 })
+      }))
 
     return res.body?.result
   }

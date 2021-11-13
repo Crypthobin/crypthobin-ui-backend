@@ -1,0 +1,114 @@
+@
+@schema = http
+@host = localhost
+@port = 3000
+@hosturl = {{schema}}://{{host}}:{{port}}
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dGVzdCIsImlhdCI6MTYzNjc3NzkzNzAxMiwiZXhwIjoxNjM2ODY0MzM3MDEyfQ.Et6gizmtjBuFuQXe-JUETBABC-tN_aPQOToOV8oV_j4
+@walletId = 12b91091b95f84971435e5a075dd41
+
+### LOGIN
+POST {{hosturl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "testtest",
+  "password": "password1234"
+}
+
+
+### REGIST USER
+POST {{hosturl}}/auth/regist HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "testtest",
+  "password": "password1234",
+  "passwordCheck": "password1234"
+}
+
+
+### GET BLOCKCHAIN INFO
+GET {{hosturl}}/api/info HTTP/1.1
+
+
+### GET WALLET QR CODE
+GET {{hosturl}}/qr/fb9354945986c1d178e094f8aede48ca.png HTTP/1.1
+
+
+### CREATE WALLET
+POST {{hosturl}}/api/wallets HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "alias": "테스트월렛_{{$timestamp}}"
+}
+
+
+### GET WALLET INFO
+GET {{hosturl}}/api/wallets/{{walletId}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### GET WALLET TRANSACTION LIST
+GET {{hosturl}}/api/wallets/{{walletId}}/transactions HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### LIST USER'S WALLET
+GET {{hosturl}}/api/wallets HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### SEND TO ADDRESS
+POST {{hosturl}}/api/wallets/{{walletId}}/remittance HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "to": "pqc1quaeu9a6s6fyvcwk9teyhutslxrxgwh8w033y4g",
+  "amount": 10
+}
+
+
+### DELETE ADDRESS BOOK
+DELETE {{hosturl}}/api/addresses/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### EDIT ADDRESS BOOK
+PUT {{hosturl}}/api/addresses/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "explanation": "test"
+}
+
+
+### GET ADDRESS BOOK
+GET {{hosturl}}/api/addresses/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### LIST ADDRESS BOOK
+GET {{hosturl}}/api/addresses HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### REGIST ADDRESS BOOK
+POST {{hosturl}}/api/addresses HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "explanation": "AAA의 월렛",
+  "address": "pqc1qmpaucwalj2fg4vmuycnzf8jrdp05djr2hae3ns"
+}

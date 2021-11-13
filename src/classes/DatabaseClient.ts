@@ -1,26 +1,16 @@
-import knex, { Knex } from 'knex'
-import { config } from 'dotenv'
+import knex from 'knex'
+import { DB_CONNECTION_INFO } from '../constants'
 import { AddressData, UnsecuredUserData, WalletData } from 'models'
 
-config()
-
 export default class DatabaseClient {
-  public db: Knex
+  public db = knex(DB_CONNECTION_INFO)
 
-  constructor () {
-    this.db = knex({
-      client: 'mysql',
-      connection: {
-        host: process.env.DATABASE_HOST || 'localhost',
-        port: parseInt(process.env.DATABASE_PORT!) || 3306,
-        database: process.env.DATABASE_NAME || 'bobowl',
-        user: process.env.DATABASE_USER || 'bobowl'
-      }
-    })
-  }
-
+  /**
+   * 유저 수를 얻습니다.
+   */
   public async getUserCount (): Promise<number> {
-    return ((await this.db.count('user_id').from('users')) as any[])[0]['count(`user_id`)']
+    const [data] = await this.db.count('user_id').from('users')
+    return data['count(`user_id`)'] as number
   }
 
   /**

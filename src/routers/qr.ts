@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { qrStorage } from '../classes/QRStorage'
+import { qrStorage } from '../classes'
 
 const router = Router()
 

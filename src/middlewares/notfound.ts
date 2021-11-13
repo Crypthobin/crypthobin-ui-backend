@@ -1,10 +1,9 @@
+import { endpointError } from '../utils'
 import { Request, Response } from 'express'
-import ENDPOINT_ERRORS from '../constants/errors'
 
+/**
+ * creates a not found error
+ */
 export default function notfound (_: Request, res: Response) {
-  res.status(404).send({
-    success: false,
-    error: 902,
-    message: ENDPOINT_ERRORS[902]
-  })
+  res.status(404).send(endpointError('ENDPOINT_NOT_FOUND'))
 }

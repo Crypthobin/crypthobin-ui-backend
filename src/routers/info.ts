@@ -1,14 +1,12 @@
 import { Router } from 'express'
-import { db } from '../classes/DatabaseClient'
-import { bitcoin } from '../classes/BitcoinRPC'
+import { db, bitcoin } from '../classes'
 
 const router = Router()
 
-router.get('/', async (req, res) => {
-  const blockCount = await bitcoin.getBlockCount()
+router.get('/', async (_, res) => {
+  const userCount = await db.getUserCount()
   const nodeCount = await bitcoin.getNodeCount()
-
-  const usersCount = await db.getUserCount()
+  const blockCount = await bitcoin.getBlockCount()
 
   const blocks =
     Array(10).fill(0)
@@ -29,9 +27,9 @@ router.get('/', async (req, res) => {
   res.send({
     success: true,
     data: {
+      userCount,
       blockCount,
       nodeCount: nodeCount + 1, // add 1 for the node itself
-      usersCount,
       blocks: blocksInfo
     }
   })

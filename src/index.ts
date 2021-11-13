@@ -9,12 +9,17 @@ import notfound from './middlewares/notfound'
 
 const app = express()
 
+// logger middleware
 app.use(morgan('common'))
+
+// endpoint routers
 app.use('/qr', qrRouter)
 app.use('/auth', authRouter)
 app.use('/api/info', infoRouter)
 app.use('/api/wallets', walletRouter)
 app.use('/api/addresses', addressRouter)
+
+// 404 handler
 app.use(notfound)
 
 app.listen(3000, () =>

@@ -1,8 +1,7 @@
-import { json, Router } from 'express'
+import { db } from '../classes'
 import { UserData } from '../models'
-import { db } from '../classes/DatabaseClient'
-import ENDPOINT_ERRORS from '../constants/errors'
-import { createToken, hashPassword, verifyPassword } from '../utils/crypto'
+import { json, Router } from 'express'
+import { CryptoUtil, endpointError } from '../utils'
 
 const router = Router()
 
@@ -10,45 +9,30 @@ router.use(json())
 router.post('/login', async (req, res) => {
   const { id, password } = req.body
   if ([id, password].some(v => typeof v !== 'string')) {
-    res.status(400).json({
-      success: false,
-      error: 103,
-      message: ENDPOINT_ERRORS[103]
-    })
-
+    res.status(400).json(endpointError('INPUT_FIELD_NOT_FOUND'))
     return
   }
 
   const user = await db.getUserData(id)
 
   if (!user) {
-    res.status(400).send({
-      success: false,
-      error: 101,
-      message: ENDPOINT_ERRORS[101]
-    })
-
+    res.status(400).send(endpointError('USER_NOT_EXIST'))
     return
   }
 
-  if (!verifyPassword(password, user)) {
-    res.status(400).send({
-      success: false,
-      error: 102,
-      message: ENDPOINT_ERRORS[102]
-    })
-
+  if (!CryptoUtil.verifyPassword(password, user)) {
+    res.status(400).send(endpointError('PASSWORD_INVAILD'))
     return
   }
 
-  const token = createToken(user)
+  const token = CryptoUtil.generateToken(user)
 
   res.send({
     success: true,
     data: {
       user: <UserData>{
-        createdAt: user.createdAt,
-        id: user.id
+        id: user.id,
+        createdAt: user.createdAt
       },
       token
     }
@@ -59,63 +43,39 @@ router.post('/regist', async (req, res) => {
   const { id, password, passwordCheck } = req.body
 
   if ([id, password, passwordCheck].some(v => typeof v !== 'string')) {
-    res.status(400).json({
-      success: false,
-      error: 114,
-      message: ENDPOINT_ERRORS[114]
-    })
+    res.status(400).json(endpointError('INPUT_FIELD_NOT_FOUND'))
 
     return
   }
 
   if (id.length < 6 || id.length > 30) {
-    res.status(400).json({
-      success: false,
-      error: 112,
-      message: ENDPOINT_ERRORS[112]
-    })
-
+    res.status(400).json(endpointError('ID_TOO_SHORT_OR_LONG'))
     return
   }
 
   if (password.length < 8) {
-    res.status(400).json({
-      success: false,
-      error: 113,
-      message: ENDPOINT_ERRORS[113]
-    })
+    res.status(400).json(endpointError('PASSWORD_TOO_SHORT'))
 
     return
   }
 
   if (password !== passwordCheck) {
-    res.status(400).json({
-      success: false,
-      error: 115,
-      message: ENDPOINT_ERRORS[115]
-    })
+    res.status(400).json(endpointError('PASSWORD_CHECK_FAILD'))
   }
 
   if (await db.getUserData(id)) {
-    res.status(400).json({
-      success: false,
-      error: 110,
-      message: ENDPOINT_ERRORS[111]
-    })
-
+    res.status(400).json(endpointError('ID_ALREADY_CLAIMED'))
     return
   }
 
-  const hashed = hashPassword(password)
-
   await db.putUserData({
-    id, passwd: hashed.passwd, salt: hashed.salt
+    id, ...CryptoUtil.hashPassword(password)
   })
 
   const user = await db.getUserData(id)
   if (!user) return
 
-  const token = createToken(user)
+  const token = CryptoUtil.generateToken(user)
 
   res.send({
     success: true,

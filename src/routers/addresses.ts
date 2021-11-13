@@ -1,7 +1,7 @@
+import { db } from '../classes'
 import { json, Router } from 'express'
+import { endpointError } from '../utils'
 import authUser from '../middlewares/auth'
-import { db } from '../classes/DatabaseClient'
-import ENDPOINT_ERRORS from '../constants/errors'
 
 const router = Router()
 
@@ -23,11 +23,8 @@ router.post('/', async (req, res) => {
   const { explanation, address } = req.body
 
   if (typeof address !== 'string' || address.length !== 43) {
-    return res.status(400).send({
-      success: false,
-      error: 311,
-      message: ENDPOINT_ERRORS[311]
-    })
+    res.status(400).send(endpointError('ADDRESS_INVAILD'))
+    return
   }
 
   const explainString =
@@ -36,11 +33,7 @@ router.post('/', async (req, res) => {
       : ''
 
   if (explainString.length > 100) {
-    return res.status(400).send({
-      success: false,
-      error: 312,
-      message: ENDPOINT_ERRORS[312]
-    })
+    return res.status(400).send(endpointError('EXPLAIN_TOO_LONG'))
   }
 
   await db.putAddressData({
@@ -59,21 +52,14 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params
 
   const wallet = await db.getAddressData(id)
-
   if (!wallet) {
-    return res.status(400).send({
-      success: false,
-      error: 321,
-      message: ENDPOINT_ERRORS[321]
-    })
+    res.status(400).send(endpointError('WALLET_NOT_FOUND'))
+    return
   }
 
   if (wallet.registerId !== userId) {
-    return res.status(400).send({
-      success: false,
-      error: 322,
-      message: ENDPOINT_ERRORS[322]
-    })
+    res.status(400).send(endpointError('WALLET_NOT_OWNER'))
+    return
   }
 
   res.send({
@@ -83,26 +69,20 @@ router.get('/:id', async (req, res) => {
 })
 
 router.put('/:id', async (req, res) => {
-  const { userId } = res.locals
   const { id } = req.params
+  const { userId } = res.locals
   const { explanation } = req.body
 
   const wallet = await db.getAddressData(id)
 
   if (!wallet) {
-    return res.status(400).send({
-      success: false,
-      error: 331,
-      message: ENDPOINT_ERRORS[331]
-    })
+    res.status(400).send(endpointError('WALLET_NOT_FOUND'))
+    return
   }
 
   if (wallet.registerId !== userId) {
-    return res.status(400).send({
-      success: false,
-      error: 332,
-      message: ENDPOINT_ERRORS[332]
-    })
+    res.status(400).send(endpointError('WALLET_NOT_OWNER'))
+    return
   }
 
   const explainString =
@@ -111,11 +91,8 @@ router.put('/:id', async (req, res) => {
       : ''
 
   if (explainString.length > 100) {
-    return res.status(400).send({
-      success: false,
-      error: 333,
-      message: ENDPOINT_ERRORS[333]
-    })
+    res.status(400).send(endpointError('EXPLAIN_TOO_LONG'))
+    return
   }
 
   await db.updateAddressExplan(id, explainString)
@@ -132,19 +109,13 @@ router.delete('/:id', async (req, res) => {
   const wallet = await db.getAddressData(id)
 
   if (!wallet) {
-    return res.status(400).send({
-      success: false,
-      error: 341,
-      message: ENDPOINT_ERRORS[341]
-    })
+    res.status(400).send(endpointError('WALLET_NOT_FOUND'))
+    return
   }
 
   if (wallet.registerId !== userId) {
-    return res.status(400).send({
-      success: false,
-      error: 342,
-      message: ENDPOINT_ERRORS[342]
-    })
+    res.status(400).send(endpointError('WALLET_NOT_OWNER'))
+    return
   }
 
   await db.deleteAddressData(id)
