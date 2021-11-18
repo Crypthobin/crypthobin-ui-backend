@@ -1,11 +1,17 @@
 import { db } from '../classes'
 import { UserData } from '../models'
 import { json, Router } from 'express'
+import authUser from '../middlewares/auth'
 import { CryptoUtil, endpointError } from '../utils'
 
 const router = Router()
 
 router.use(json())
+
+router.get('/check', authUser, (_, res) => {
+  res.send({ success: true })
+})
+
 router.post('/login', async (req, res) => {
   const { id, password } = req.body
   if ([id, password].some(v => typeof v !== 'string')) {
