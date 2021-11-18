@@ -136,11 +136,16 @@ router.post('/:walletId/remittance', async (req, res) => {
 router.get('/:walletId/transactions', async (req, res) => {
   const { userId } = res.locals
   const { walletId } = req.params
+  const { count, page } = req.query
+
+  if (!count || !page || typeof count !== 'string' || typeof page !== 'string') {
+    res.status(400).send(endpointError('PARAMS_INVAILD'))
+    return
+  }
 
   const wallet = await db.getWalletData(walletId)
   if (!wallet) {
     res.status(400).send(endpointError('WALLET_NOT_FOUND'))
-
     return
   }
 
@@ -149,7 +154,7 @@ router.get('/:walletId/transactions', async (req, res) => {
     return
   }
 
-  const transactions = await bitcoin.getTransactions(wallet.id)
+  const transactions = await bitcoin.getTransactions(wallet.id, count, page)
 
   const filteredTransactions =
     transactions.filter((v: any) =>

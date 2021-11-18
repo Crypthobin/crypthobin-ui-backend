@@ -18,7 +18,8 @@ export const ENDPOINT_ERRORS = {
   ADDRESS_NOT_FOUND: 321, // 주소록을 찾을 수 없음
   ADDRESS_NOT_OWNER: 322, // 주소록의 등록자가 아님
   TOKEN_INVAILD: 901, // 로그인 하지 않았거나 세션이 유효하지 않음
-  ENDPOINT_NOT_FOUND: 902 // 해당하는 엔드포인트를 찾을 수 없음
+  ENDPOINT_NOT_FOUND: 902, // 해당하는 엔드포인트를 찾을 수 없음
+  PARAMS_INVAILD: 903 // 잘못된 파라미터
 }
 
 export type ENDPOINT_ERRORS_TYPE = keyof typeof ENDPOINT_ERRORS
