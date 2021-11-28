@@ -9,7 +9,7 @@ export const QR_GENERATE_OPTION = {
   correctLevel: QRErrorCorrectLevel.H,
   version: 6,
   size: 500,
-  colorDark: '#0b508a',
+  colorDark: '#FFA500',
   margin: 1,
   components: {
     data: {
