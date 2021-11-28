@@ -46,9 +46,10 @@ export default class BitcoinRPC {
     }, walletId)
   }
 
-  public getTransactions (walletId: string): Promise<any> {
+  public getTransactions (walletId: string, count: string, page: string): Promise<any> {
     return this._request({
-      method: 'listtransactions'
+      method: 'listtransactions',
+      params: [count, parseInt(page) * parseInt(count)]
     }, walletId)
   }
 
