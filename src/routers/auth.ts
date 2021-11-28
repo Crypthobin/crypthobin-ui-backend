@@ -12,6 +12,13 @@ router.get('/check', authUser, (_, res) => {
   res.send({ success: true })
 })
 
+router.get('/claimed', async (req, res) => {
+  const { id } = req.query
+  const claimed = await db.getUserData(String(id))
+
+  res.send({ claimed: !!claimed })
+})
+
 router.post('/login', async (req, res) => {
   const { id, password } = req.body
   if ([id, password].some(v => typeof v !== 'string')) {
