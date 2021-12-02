@@ -160,6 +160,9 @@ router.get('/:walletId/transactions', async (req, res) => {
   }
 
   const transactions = await bitcoin.getTransactions(wallet.id, count, page)
+  console.log(transactions)
+
+  if (!transactions) return res.send({ success: true, data: [] })
 
   const filteredTransactions =
     transactions.filter((v: any) =>
