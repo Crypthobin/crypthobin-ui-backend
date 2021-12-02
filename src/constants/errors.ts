@@ -13,7 +13,8 @@ export const ENDPOINT_ERRORS = {
   ALIAS_INVALID: 223, // 월렛 별명이 너무 짧거나 김
   ADDRESS_INVAILD: 231, // 주소 형식이 잘못됨
   AMOUNT_INVAILD: 232, // 송금액 형식이 잘못됨
-  LOW_BALANCE: 235, // 잔액 부족
+  LOW_BALANCE: 235,
+  TOO_SMALL_AMOUNT: 236, // 잔액 부족
   EXPLAIN_TOO_LONG: 312, // 설명이 너무 김
   ADDRESS_NOT_FOUND: 321, // 주소록을 찾을 수 없음
   ADDRESS_NOT_OWNER: 322, // 주소록의 등록자가 아님

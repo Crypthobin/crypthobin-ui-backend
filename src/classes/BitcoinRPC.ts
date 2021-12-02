@@ -6,15 +6,19 @@ export default class BitcoinRPC {
   private async _request (data: any, walletId?: string) {
     const url = `${BITCOIND_RPC_URL}${walletId ? `/wallet/${walletId}` : ''}`
 
-    const res = await post(url)
-      .set('Content-Type', 'text/plain')
-      .send(JSON.stringify({
-        ...data,
-        jsonrpc: '1.0',
-        id: cryptoRandomString({ length: 10 })
-      }))
+    try {
+      const res = await post(url)
+        .set('Content-Type', 'text/plain')
+        .send(JSON.stringify({
+          ...data,
+          jsonrpc: '1.0',
+          id: cryptoRandomString({ length: 10 })
+        }))
 
-    return res.body?.result
+      return res.body?.result
+    } catch (e: any) {
+      return null
+    }
   }
 
   public createWallet (): Promise<any> {

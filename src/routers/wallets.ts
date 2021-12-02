@@ -127,7 +127,12 @@ router.post('/:walletId/remittance', async (req, res) => {
     return
   }
 
-  await bitcoin.transit(wallet.id, to, amount)
+  const resp = await bitcoin.transit(wallet.id, to, amount)
+  if (!resp) {
+    res.status(400).send(endpointError('TOO_SMALL_AMOUNT'))
+    return
+  }
+
   res.send({
     success: true
   })
