@@ -16,7 +16,7 @@ router.get('/', async (_, res) => {
 
   const blocksData = await Promise.all(blocks)
   const blocksInfo =
-    blocksData.map((v) => ({
+    blocksData.filter((v) => !!v).map((v) => ({
       index: v.height,
       time: v.time,
       miner: v.tx[0].vout[0].scriptPubKey.address,
