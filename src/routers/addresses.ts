@@ -1,4 +1,4 @@
-import { db } from '../classes'
+import { db, bitcoin } from '../classes'
 import { json, Router } from 'express'
 import { endpointError } from '../utils'
 import authUser from '../middlewares/auth'
@@ -10,7 +10,20 @@ router.use(authUser)
 
 router.get('/', async (_, res) => {
   const { userId } = res.locals
-  const wallets = await db.listAddressDatas(userId)
+  const wallets = await db.listAddressDatas(userId) as any[]
+
+  for (const walletIndex in wallets) {
+    const wallet = wallets[walletIndex]
+    const mappedWallet = await db.getWalletDataByAddress(wallet.walletAddress)
+
+    if (!mappedWallet) {
+      wallets[walletIndex].otherAddresses = []
+      continue
+    }
+
+    const otherAddresses = await bitcoin.getAddressGroupings(mappedWallet.id)
+    wallets[walletIndex].otherAddresses = otherAddresses.flat().map((v: any) => v[0])
+  }
 
   res.send({
     success: true,

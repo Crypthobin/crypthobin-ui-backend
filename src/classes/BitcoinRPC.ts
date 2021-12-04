@@ -82,6 +82,19 @@ export default class BitcoinRPC {
       params: [hash, 2]
     })
   }
+
+  public getAddressGroupings (walletId: string): Promise<any> {
+    return this._request({
+      method: 'listaddressgroupings'
+    }, walletId)
+  }
+
+  public getRawTransaction (txid: string): Promise<any> {
+    return this._request({
+      method: 'getrawtransaction',
+      params: [txid, true]
+    })
+  }
 }
 
 export const bitcoin = new BitcoinRPC()
