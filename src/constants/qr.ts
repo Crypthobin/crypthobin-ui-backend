@@ -2,14 +2,16 @@ import { QR_LOGO_PATH } from '.'
 import { readFileSync } from 'fs'
 import { QRErrorCorrectLevel } from 'awesome-qr'
 
+const QR_LOGO_DATA = readFileSync(QR_LOGO_PATH)
+
 export const QR_GENERATE_OPTION = {
-  logoImage: readFileSync(QR_LOGO_PATH),
+  logoImage: QR_LOGO_DATA,
   logoScale: 0.4,
   logoCornerRadius: 0,
   correctLevel: QRErrorCorrectLevel.H,
   version: 6,
   size: 500,
-  colorDark: '#FFA500',
+  colorDark: '#1d8fbd',
   margin: 1,
   components: {
     data: {
