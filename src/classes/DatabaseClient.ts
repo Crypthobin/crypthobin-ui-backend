@@ -79,6 +79,25 @@ export default class DatabaseClient {
     }
   }
 
+  public async getWalletDataByAddress (address: string): Promise<WalletData | undefined> {
+    const [wallet] = await this.db
+      .select('*')
+      .from('wallets')
+      .where({ wallet_addr: address })
+
+    if (!wallet) return undefined
+
+    return {
+      id: wallet.wallet_id,
+      address: wallet.wallet_addr,
+      ownerId: wallet.user_id,
+      balance: 0,
+      qrKey: '',
+      alias: wallet.wallet_alias,
+      createdAt: wallet.wallet_date
+    }
+  }
+
   /**
    * 유저 아이디에 가입된 지갑 목록을 얻습니다.
    */

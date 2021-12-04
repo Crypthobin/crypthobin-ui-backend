@@ -166,6 +166,20 @@ router.get('/:walletId/transactions', async (req, res) => {
     transactions.filter((v: any) =>
       ['send', 'receive'].includes(v.category))
 
+  for (const transactionIndex in filteredTransactions) {
+    const transaction = filteredTransactions[transactionIndex]
+
+    if (transaction.category === 'send') continue
+
+    const tx = await bitcoin.getRawTransaction(transaction.txid)
+
+    const vinTxId = tx.vin[0].txid
+
+    const vinTx = await bitcoin.getRawTransaction(vinTxId)
+
+    filteredTransactions[transactionIndex].address = vinTx.vout[0].scriptPubKey.address
+  }
+
   res.send({
     success: true,
     data: filteredTransactions
