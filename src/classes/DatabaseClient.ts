@@ -37,7 +37,7 @@ export default class DatabaseClient {
    * 유저정보를 추가합니다.
    */
   public async putUserData (data: Omit<UnsecuredUserData, 'createdAt'>): Promise<void> {
-    if (data.id.length < 6 || data.id.length > 30) {
+    if (data.id.length < 5 || data.id.length > 30) {
       throw new Error('ID is too short or long')
     }
 
