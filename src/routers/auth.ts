@@ -61,7 +61,7 @@ router.post('/regist', async (req, res) => {
     return
   }
 
-  if (id.length < 6 || id.length > 30) {
+  if (id.length < 5 || id.length > 30) {
     res.status(400).json(endpointError('ID_TOO_SHORT_OR_LONG'))
     return
   }
