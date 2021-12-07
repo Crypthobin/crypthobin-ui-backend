@@ -196,10 +196,30 @@ export default class DatabaseClient {
   }
 
   /**
+   * 주소 정보를 얻습니다.
+   */
+  public async getAddressDataByCtx (userid: string, address: string, exp: string): Promise<AddressData | undefined> {
+    const [addr] = await this.db
+      .select('*')
+      .from('addresses')
+      .whereRaw('user_id = ? and (wallet_addr = ? or address_explan = ?)', [userid, address, exp])
+
+    if (!addr) return undefined
+
+    return {
+      id: addr.address_id,
+      registerId: addr.user_id,
+      walletAddress: addr.wallet_addr,
+      explanation: addr.address_explan,
+      createdAt: addr.address_date
+    }
+  }
+
+  /**
    * userId가 등록한 번호부 목록을 얻습니다.
    */
   public async listAddressDatas (userId: string): Promise<AddressData[]> {
-    if (userId.length < 6 || userId.length > 30) {
+    if (userId.length < 5 || userId.length > 30) {
       throw new Error('ID is too short or long')
     }
 

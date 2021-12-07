@@ -49,11 +49,15 @@ router.post('/', async (req, res) => {
     return res.status(400).send(endpointError('EXPLAIN_TOO_LONG'))
   }
 
-  await db.putAddressData({
-    registerId: userId,
-    explanation: explainString,
-    walletAddress: address
-  })
+  const data = await db.getAddressDataByCtx(userId, address, explainString)
+
+  if (!data) {
+    await db.putAddressData({
+      registerId: userId,
+      explanation: explainString,
+      walletAddress: address
+    })
+  }
 
   res.send({
     success: true
