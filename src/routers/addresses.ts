@@ -51,13 +51,16 @@ router.post('/', async (req, res) => {
 
   const data = await db.getAddressDataByCtx(userId, address, explainString)
 
-  if (!data) {
-    await db.putAddressData({
-      registerId: userId,
-      explanation: explainString,
-      walletAddress: address
-    })
+  if (data) {
+    res.status(400).send(endpointError('ADDRESS_ALEADY_EXIST'))
+    return
   }
+
+  await db.putAddressData({
+    registerId: userId,
+    explanation: explainString,
+    walletAddress: address
+  })
 
   res.send({
     success: true
