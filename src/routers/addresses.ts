@@ -22,7 +22,7 @@ router.get('/', async (_, res) => {
     }
 
     const otherAddresses = await bitcoin.getAddressGroupings(mappedWallet.id)
-    wallets[walletIndex].otherAddresses = otherAddresses.flat().map((v: any) => v[0])
+    wallets[walletIndex].otherAddresses = otherAddresses?.flat()?.map((v: any) => v[0]) || []
   }
 
   res.send({
