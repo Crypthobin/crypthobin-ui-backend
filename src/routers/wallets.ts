@@ -184,7 +184,7 @@ router.get('/:walletId/transactions', async (req, res) => {
 
   res.send({
     success: true,
-    data: filteredTransactions.map((v: any) => ({ ...v, timerecived: v.timereceived }))
+    data: filteredTransactions.map((v: any) => ({ ...v, timerecived: v.timereceived * 1000 }))
   })
 })
 
